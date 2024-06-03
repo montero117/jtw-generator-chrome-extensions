@@ -6,9 +6,9 @@ function uuidv4() {
     });
   }
   
-    function generateJWT(data, secret, expiresIn) {
+  async function generateJWT(data, secret, expiresIn) {
     try {
-      payload={};
+      const payload = {};
       payload.fresh = false;
       payload.iat = Math.floor(Date.now() / 1000);
       payload.jti = uuidv4(); 
@@ -20,7 +20,7 @@ function uuidv4() {
       const base64Payload = btoa(JSON.stringify(payload));
       const base64Header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
       const token = base64Header + '.' + base64Payload;
-      const signature =  signToken(token, secret);
+      const signature = await signToken(token, secret); // Esperar la resolución de la promesa
       const jwt = token + '.' + signature;
   
       return jwt;
@@ -49,5 +49,5 @@ function uuidv4() {
     }
   }
   
-  
   module.exports = { uuidv4, generateJWT, signToken };
+  

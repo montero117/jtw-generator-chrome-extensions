@@ -6,28 +6,35 @@ function uuidv4() {
     });
   }
   
-  async function generateJWT(data, secret, expiresIn) {
-    try {
-      const payload = {};
-      payload.fresh = false;
-      payload.iat = Math.floor(Date.now() / 1000);
-      payload.jti = uuidv4(); 
-      payload.type = "access"; 
-      payload.sub = data; 
-      payload.nbf = payload.iat; 
-      payload.csrf = uuidv4(); 
-      payload.exp = payload.iat + expiresIn; 
-      const base64Payload = btoa(JSON.stringify(payload));
-      const base64Header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
-      const token = base64Header + '.' + base64Payload;
-      const signature = await signToken(token, secret); // Esperar la resolución de la promesa
-      const jwt = token + '.' + signature;
-  
-      return jwt;
-    } catch (error) {
-      console.error('Error al generar el token:', error);
-      throw error;
-    }
+  function generateJWT(data, secret, expiresIn) {
+    return new Promise((resolve, reject) => {
+      try {
+        const payload = {};
+        payload.fresh = false;
+        payload.iat = Math.floor(Date.now() / 1000);
+        payload.jti = uuidv4(); 
+        payload.type = "access"; 
+        payload.sub = data; 
+        payload.nbf = payload.iat; 
+        payload.csrf = uuidv4(); 
+        payload.exp = payload.iat + expiresIn; 
+        const base64Payload = btoa(JSON.stringify(payload));
+        const base64Header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
+        const token = base64Header + '.' + base64Payload;
+        signToken(token, secret)
+          .then(signature => {
+            const jwt = token + '.' + signature;
+            resolve(jwt);
+          })
+          .catch(error => {
+            console.error('Error al generar el token:', error);
+            reject(error);
+          });
+      } catch (error) {
+        console.error('Error al generar el token:', error);
+        reject(error);
+      }
+    });
   }
   
   async function signToken(token, secret) {
@@ -49,5 +56,6 @@ function uuidv4() {
     }
   }
   
-  module.exports = { uuidv4, generateJWT, signToken };
+  
+  module.exports = { generateJWT};
   

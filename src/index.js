@@ -1,3 +1,7 @@
+/**
+ * Generates a UUIDv4.
+ * @returns {string} The generated UUIDv4.
+ */
 function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
       var r = Math.random() * 16 | 0,
@@ -6,9 +10,21 @@ function uuidv4() {
     });
   }
   
+  /**
+   * Generates a JWT (JSON Web Token) asynchronously.
+   * @param {string} data - The data to include in the token.
+   * @param {string} secret - The secret key to sign the token.
+   * @param {number} expiresIn - The expiration time of the token in seconds.
+   * @returns {Promise<string>} A promise that resolves with the generated JWT.
+   */
   function generateJWT(data, secret, expiresIn) {
     return new Promise((resolve, reject) => {
       try {
+        // Input data validation
+        if (typeof data !== 'string' || typeof secret !== 'string' || typeof expiresIn !== 'number') {
+          throw new Error('Arguments must be of the correct type');
+        }
+        
         const payload = {};
         payload.fresh = false;
         payload.iat = Math.floor(Date.now() / 1000);
@@ -27,16 +43,22 @@ function uuidv4() {
             resolve(jwt);
           })
           .catch(error => {
-            console.error('Error al generar el token:', error);
+            console.error('Error generating token:', error);
             reject(error);
           });
       } catch (error) {
-        console.error('Error al generar el token:', error);
+        console.error('Error generating token:', error);
         reject(error);
       }
     });
   }
   
+  /**
+   * Signs a token using a secret key asynchronously.
+   * @param {string} token - The token to sign.
+   * @param {string} secret - The secret key to sign the token.
+   * @returns {Promise<string>} A promise that resolves with the token signature.
+   */
   async function signToken(token, secret) {
     try {
       const secretBuffer = new TextEncoder().encode(secret);
@@ -51,11 +73,10 @@ function uuidv4() {
       const signature = btoa(String.fromCharCode(...new Uint8Array(signatureBuffer)));
       return signature;
     } catch (error) {
-      console.error('Error al firmar el token:', error);
+      console.error('Error signing token:', error);
       throw error;
     }
   }
   
-  
-  module.exports = { generateJWT};
+  module.exports = { generateJWT };
   

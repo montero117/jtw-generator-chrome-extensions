@@ -1,0 +1,23 @@
+{
+  "name": "jtw-generator-chrome-extensions",
+  "version": "1.0.0",
+  "description": "A private package for generating JWTs and UUIDs",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/montero117/chrome_jtw_generator.git"
+  },
+  "keywords": [
+    "jwt",
+    "uuid",
+    "generator",
+    "chrome",
+    "extension",
+    "package"
+  ],
+  "author": "jose carlos de jesus montero rodriguez",
+  "license": "ISC"
+}

@@ -6,7 +6,7 @@ function uuidv4() {
     });
   }
   
-  async function generateJWT(data, secret, expiresIn) {
+   function generateJWT(data, secret, expiresIn) {
     try {
       payload={};
       payload.fresh = false;
@@ -20,7 +20,7 @@ function uuidv4() {
       const base64Payload = btoa(JSON.stringify(payload));
       const base64Header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
       const token = base64Header + '.' + base64Payload;
-      const signature = await signToken(token, secret);
+      const signature =  signToken(token, secret);
       const jwt = token + '.' + signature;
   
       return jwt;
@@ -30,17 +30,17 @@ function uuidv4() {
     }
   }
   
-  async function signToken(token, secret) {
+   function signToken(token, secret) {
     try {
       const secretBuffer = new TextEncoder().encode(secret);
-      const secretKey = await crypto.subtle.importKey(
+      const secretKey =  crypto.subtle.importKey(
         'raw',
         secretBuffer,
         { name: 'HMAC', hash: { name: 'SHA-256' } },
         false,
         ['sign']
       );
-      const signatureBuffer = await crypto.subtle.sign('HMAC', secretKey, new TextEncoder().encode(token));
+      const signatureBuffer =  crypto.subtle.sign('HMAC', secretKey, new TextEncoder().encode(token));
       const signature = btoa(String.fromCharCode(...new Uint8Array(signatureBuffer)));
       return signature;
     } catch (error) {
